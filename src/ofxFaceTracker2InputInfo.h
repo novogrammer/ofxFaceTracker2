@@ -10,6 +10,7 @@ public:
     int inputWidth, inputHeight;
     int landmarkWidth, landmarkHeight;
     int imageRotation;
+    cv::Mat cameraMatrix;
     
     // Parameters calculated automatically
     ofMatrix4x4 rotationMatrix;
@@ -18,12 +19,13 @@ public:
     // Constructor
     ofxFaceTracker2InputInfo(){};
     
-    ofxFaceTracker2InputInfo(int inputWidth, int inputHeight,int landmarkWidth, int landmarkHeight, int imageRotation)
+    ofxFaceTracker2InputInfo(int inputWidth, int inputHeight,int landmarkWidth, int landmarkHeight, int imageRotation, cv::Mat cameraMatrix)
     : inputWidth(inputWidth)
     , inputHeight(inputHeight)
     , landmarkWidth(landmarkWidth)
     , landmarkHeight(landmarkHeight)
-    , imageRotation(imageRotation) {
+    , imageRotation(imageRotation)
+    , cameraMatrix(cameraMatrix) {
         // Calculate rotation matrix
         if(imageRotation == 90){
             rotationMatrix.makeIdentityMatrix();
@@ -47,19 +49,9 @@ public:
         
         
         // Calculate intrinsics
-        float aov = 280;
-        float focalLength = inputWidth * ofDegToRad(aov);
-        float opticalCenterX = inputWidth/2;
-        float opticalCenterY = inputHeight/2;
-        
-        cv::Mat1d projectionMat = cv::Mat::zeros(3,3,CV_32F);
-        projectionMat(0,0) = focalLength;
-        projectionMat(1,1) = focalLength;
-        projectionMat(0,2) = opticalCenterX;
-        projectionMat(1,2) = opticalCenterY;
-        projectionMat(2,2) = 1;
-        
+        cameraMatrix.at<double>(0,2)=inputWidth/2;
+        cameraMatrix.at<double>(1,2)=inputHeight/2;
         cv::Size2i imageSize(inputWidth, inputHeight);
-        intrinsics.setup(projectionMat, imageSize);
+        intrinsics.setup(cameraMatrix, imageSize);
     }
 };

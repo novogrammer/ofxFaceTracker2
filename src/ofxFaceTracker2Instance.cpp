@@ -115,18 +115,6 @@ void ofxFaceTracker2Instance::calculatePoseMatrix(){
     const cv::Point3f P3D_STOMMION( 0.,-75.0,10.0);
     const cv::Point3f P3D_MENTON( 0.,-133.0, 0.);
     
-    float aov = 280;
-    float focalLength = info.inputWidth * ofDegToRad(aov);
-    float opticalCenterX = info.inputWidth/2;
-    float opticalCenterY = info.inputHeight/2;
-    
-    cv::Mat1d projectionMat = cv::Mat::zeros(3,3,CV_32F);
-    poseProjection = projectionMat;
-    poseProjection(0,0) = focalLength;
-    poseProjection(1,1) = focalLength;
-    poseProjection(0,2) = opticalCenterX;
-    poseProjection(1,2) = opticalCenterY;
-    poseProjection(2,2) = 1;
     
     std::vector<cv::Point3f> head_points;
     
@@ -154,7 +142,7 @@ void ofxFaceTracker2Instance::calculatePoseMatrix(){
     
     // Find the 3D pose of our head
     solvePnP(head_points, detected_points,
-             poseProjection, cv::noArray(),
+             info.cameraMatrix, cv::noArray(),
              poservec, posetvec, false,
 #ifdef OPENCV3
              cv::SOLVEPNP_ITERATIVE);

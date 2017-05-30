@@ -8,11 +8,13 @@ using namespace cv;
 #define it at<int>
 #define db at<double>
 
-
+#define AOV 280
+#define FOCAL_LENGTH (1280 * ofDegToRad(AOV))
 ofxFaceTracker2::ofxFaceTracker2()
 		:failed(true)
 		,threaded(true)
 		,imageRotation(0)
+        ,cameraMatrix((cv::Mat1d(3,3) << FOCAL_LENGTH, 0., 1280/2, 0., FOCAL_LENGTH, 720/2, 0., 0., 1.))
 		,numFaces(0)
 		,landmarkDetectorImageSize(-1)
 
@@ -105,8 +107,8 @@ bool ofxFaceTracker2::update(Mat image, cv::Rect _roi) {
 	}
 
     // Update info object
-    if(info.inputWidth != image.cols || info.inputHeight != image.rows || info.imageRotation != imageRotation){
-        info = ofxFaceTracker2InputInfo(image.cols, image.rows, im.cols, im.rows, imageRotation);
+    if(info.inputWidth != image.cols || info.inputHeight != image.rows || info.imageRotation != imageRotation || info.cameraMatrix.data != cameraMatrix.data){
+        info = ofxFaceTracker2InputInfo(image.cols, image.rows, im.cols, im.rows, imageRotation, cameraMatrix);
     }
 
 	if(threaded) mutex.lock();
@@ -321,6 +323,10 @@ void ofxFaceTracker2::setFaceOrientation(ofOrientation orientation){
 
 void ofxFaceTracker2::setFaceRotation(float rotation){
 	this->imageRotation = rotation;
+}
+
+void ofxFaceTracker2::setCameraMatrix(cv::Mat cameraMatrix){
+    this->cameraMatrix = cameraMatrix;
 }
 
 void ofxFaceTracker2::setFaceDetectorImageSize(int numPixels) {

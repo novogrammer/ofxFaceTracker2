@@ -66,6 +66,8 @@ public:
 
     /// Set the rotation in degrees of the faces. Usefull on mobile where the camera is rotated
     void setFaceRotation(float rotation);
+    
+    void setCameraMatrix(cv::Mat cameraMatrix);
 
     /// Set weather the tracker should run threaded or not
     void setThreaded(bool threaded);
@@ -100,6 +102,8 @@ protected:
 	bool failed;
 
     int imageRotation;
+    
+    cv::Mat cameraMatrix;
 
     int faceDetectorImageSize;
     int landmarkDetectorImageSize;
