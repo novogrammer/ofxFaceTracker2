@@ -63,7 +63,18 @@ ofMatrix4x4 ofxFaceTracker2Instance::getPoseMatrix(){
     
     ofMatrix4x4 matrix = ofxCv::makeMatrix(poservec, posetvec);
     matrix.scale(-1, 1, 1);
-    return matrix;
+    
+    ofVec3f translation=matrix.getTranslation();
+    ofMatrix4x4 matrix2=matrix;
+    matrix2.setTranslation(0, 0, 0);
+    ofMatrix4x4 rotationMatrix;
+    rotationMatrix.makeRotationMatrix(ofVec3f(0,0,-1), translation.getNormalized());
+
+    matrix2*=rotationMatrix;
+    matrix2*=rotationMatrix;//why?
+    
+    matrix2.setTranslation(translation);
+    return matrix2;
 }
 
 void ofxFaceTracker2Instance::loadPoseMatrix(){
@@ -144,6 +155,8 @@ void ofxFaceTracker2Instance::calculatePoseMatrix(){
     solvePnP(head_points, detected_points,
              info.cameraMatrix, cv::noArray(),
              poservec, posetvec, false,
+                   
+             //100,8.0,100,cv::noArray(),
 #ifdef OPENCV3
              cv::SOLVEPNP_ITERATIVE);
 #else
