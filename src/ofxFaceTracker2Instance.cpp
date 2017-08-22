@@ -65,6 +65,12 @@ ofMatrix4x4 ofxFaceTracker2Instance::getPoseMatrix(){
     matrix.scale(-1, 1, 1);
     
     ofVec3f translation=matrix.getTranslation();
+    //flip
+    if(0<translation.z){
+        translation*=-1;
+        matrix.scale(-1,-1,-1);
+    }
+    
     ofMatrix4x4 matrix2=matrix;
     matrix2.setTranslation(0, 0, 0);
     ofMatrix4x4 rotationMatrix;
