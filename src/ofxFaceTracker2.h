@@ -75,6 +75,9 @@ public:
     const vector<ofxFaceTracker2Instance> & getInstances() const;
     vector<ofxFaceTracker2Instance> & getInstances();
     
+    ofxFaceTracker2InputInfo& getInfo(){
+        return info;
+    }
 protected:
     vector<ofxFaceTracker2Instance> instances;
     
